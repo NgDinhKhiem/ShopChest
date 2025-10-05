@@ -5,7 +5,7 @@ main: de.epiceric.shopchest.ShopChest
 version: ${version}
 author: EpicEric
 description: Create your own nice-looking chest shops and sell your stuff to other players!
-softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld, GriefPrevention, AreaShop, Multiverse-Core, MultiWorld, BentoBox]
+softdepend: [WorldGuard, Towny, AuthMe, PlotSquared, uSkyBlock, ASkyBlock, IslandWorld, GriefPrevention, AreaShop, Multiverse-Core, MultiWorld, BentoBox, ItemsAdder]
 depend: [Vault]
 api-version: 1.13
 

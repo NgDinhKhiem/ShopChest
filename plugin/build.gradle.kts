@@ -28,7 +28,11 @@ repositories {
     // Inventive Talent repo (ReflectionHelper)
     maven {
         url = uri("https://repo.inventivetalent.org/content/groups/public/")
-    }    
+    }
+
+    maven {
+        url = uri("https://maven.devs.beer/")
+    }
 }
 
 val localDependencies = 
@@ -73,6 +77,10 @@ dependencies {
     implementation("world.bentobox:bentobox:1.17.2-SNAPSHOT")
     implementation("com.github.IntellectualSites.PlotSquared:Core:4.453")
     implementation("com.github.TownyAdvanced:Towny:0.97.5.0")
+
+    compileOnly("dev.lone:api-itemsadder:4.0.10"){
+        exclude(group = "net.kyori")
+    }
     // Add libs that does not belong to any valid maven repository
     // Using implementation makes shadow to include them in the final jar.
     // Local dependencies are not handled well and can't be excluded (see https://github.com/GradleUp/shadow/issues/142)

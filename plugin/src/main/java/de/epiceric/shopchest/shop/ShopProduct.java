@@ -1,7 +1,11 @@
 package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
+import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.ItemsAdder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class ShopProduct {
 
@@ -22,6 +26,11 @@ public class ShopProduct {
      * @return The localized name of the product's {@link ItemStack} in the selected language file.
      */
     public String getLocalizedName() {
+        CustomStack customStack = CustomStack.byItemStack(getItemStack());
+        if (customStack != null) {
+            return customStack.getDisplayName();
+        }
+
         return ShopChest.getInstance().getLanguageManager().getItemNameManager().getItemName(getItemStack());
         //LanguageUtils.getItemName(getItemStack());
     }
