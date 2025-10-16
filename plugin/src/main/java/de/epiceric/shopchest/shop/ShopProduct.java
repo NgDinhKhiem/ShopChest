@@ -2,10 +2,8 @@ package de.epiceric.shopchest.shop;
 
 import de.epiceric.shopchest.ShopChest;
 import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.ItemsAdder;
-import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class ShopProduct {
 
@@ -31,7 +29,20 @@ public class ShopProduct {
             return customStack.getDisplayName();
         }
 
-        return ShopChest.getInstance().getLanguageManager().getItemNameManager().getItemName(getItemStack());
+        String str = ShopChest.getInstance().getLanguageManager().getItemNameManager().getItemName(getItemStack());
+        if(str.equalsIgnoreCase("ERROR")){
+            Material material = getItemStack().getType();
+            String[] parts = material.name().toLowerCase().split("_");
+            StringBuilder name = new StringBuilder();
+            for (String part : parts) {
+                name.append(Character.toUpperCase(part.charAt(0)))
+                        .append(part.substring(1))
+                        .append(" ");
+            }
+            return name.toString().trim();
+        }
+
+        return str;
         //LanguageUtils.getItemName(getItemStack());
     }
 

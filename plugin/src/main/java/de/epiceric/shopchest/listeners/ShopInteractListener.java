@@ -27,6 +27,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -130,6 +131,8 @@ public class ShopInteractListener implements Listener {
             create(p, b.getLocation(), product, buyPrice, sellPrice, shopType);
         }
 
+        e.setUseInteractedBlock(Event.Result.DENY);
+        e.setUseItemInHand(Event.Result.DENY);
         e.setCancelled(true);
         ClickType.removePlayerClickType(p);
     }
@@ -183,6 +186,8 @@ public class ShopInteractListener implements Listener {
                 default: return;
             }
 
+            e.setUseInteractedBlock(Event.Result.DENY);
+            e.setUseItemInHand(Event.Result.DENY);
             e.setCancelled(true);
             ClickType.removePlayerClickType(p);
         } else {
@@ -206,11 +211,15 @@ public class ShopInteractListener implements Listener {
                         item = Utils.getItemInOffHand(p);
 
                         if (item != null && infoItem.getType() == item.getType() && infoItem.getDurability() == item.getDurability()) {
+                            e.setUseInteractedBlock(Event.Result.DENY);
+                            e.setUseItemInHand(Event.Result.DENY);
                             e.setCancelled(true);
                             info(p, shop);
                             return;
                         }
                     } else {
+                        e.setUseInteractedBlock(Event.Result.DENY);
+                        e.setUseItemInHand(Event.Result.DENY);
                         e.setCancelled(true);
                         info(p, shop);
                         return;
@@ -223,12 +232,16 @@ public class ShopInteractListener implements Listener {
             }
 
             if (p.getGameMode() == GameMode.CREATIVE) {
+                e.setUseInteractedBlock(Event.Result.DENY);
+                e.setUseItemInHand(Event.Result.DENY);
                 e.setCancelled(true);
                 p.sendMessage(messageRegistry.getMessage(Message.USE_IN_CREATIVE));
                 return;
             }
 
             if ((e.getAction() == Action.RIGHT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.LEFT_CLICK_BLOCK && inverted)) {
+                e.setUseInteractedBlock(Event.Result.DENY);
+                e.setUseItemInHand(Event.Result.DENY);
                 e.setCancelled(true);
 
                 if (shop.getShopType() == ShopType.ADMIN || !shop.getVendor().getUniqueId().equals(p.getUniqueId())) {
@@ -354,6 +367,8 @@ public class ShopInteractListener implements Listener {
                 }
 
             } else if ((e.getAction() == Action.LEFT_CLICK_BLOCK && !inverted) || (e.getAction() == Action.RIGHT_CLICK_BLOCK && inverted)) {
+                e.setUseInteractedBlock(Event.Result.DENY);
+                e.setUseItemInHand(Event.Result.DENY);
                 e.setCancelled(true);
 
                 if ((shop.getShopType() == ShopType.ADMIN) || (!shop.getVendor().getUniqueId().equals(p.getUniqueId()))) {
@@ -449,11 +464,36 @@ public class ShopInteractListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (Config.enableAuthMeIntegration && plugin.hasAuthMe() && !AuthMeApi.getInstance().isAuthenticated(e.getPlayer())) return;
         handleInteractEvent(e);
     }
+
+    /*@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryOpen(org.bukkit.event.inventory.InventoryOpenEvent e) {
+        if (!(e.getPlayer() instanceof Player)) return;
+
+        Inventory chestInv = e.getInventory();
+        if (!(chestInv.getHolder() instanceof Chest || chestInv.getHolder() instanceof DoubleChest)) return;
+
+        Location loc = null;
+        if (chestInv.getHolder() instanceof Chest) {
+            loc = ((Chest) chestInv.getHolder()).getLocation();
+        } else if (chestInv.getHolder() instanceof DoubleChest) {
+            loc = ((DoubleChest) chestInv.getHolder()).getLocation();
+        }
+
+        final Shop shop = plugin.getShopUtils().getShop(loc);
+        if (shop == null) return;
+
+        Player p = (Player) e.getPlayer();
+        if (p.getUniqueId().equals(shop.getVendor().getUniqueId()) || p.hasPermission(Permissions.OPEN_OTHER)) return;
+
+        final MessageRegistry messageRegistry = plugin.getLanguageManager().getMessageRegistry();
+        e.setCancelled(true);
+        p.sendMessage(messageRegistry.getMessage(Message.NO_PERMISSION_OPEN_OTHERS));
+    }*/
 
     /**
      * Create a new shop
