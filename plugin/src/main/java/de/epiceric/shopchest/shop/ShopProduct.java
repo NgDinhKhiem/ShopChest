@@ -30,7 +30,7 @@ public class ShopProduct {
         }
 
         String str = ShopChest.getInstance().getLanguageManager().getItemNameManager().getItemName(getItemStack());
-        if(str.equalsIgnoreCase("ERROR")){
+        if(str==null||str.isEmpty()||str.toLowerCase().contains("error")){
             Material material = getItemStack().getType();
             String[] parts = material.name().toLowerCase().split("_");
             StringBuilder name = new StringBuilder();
